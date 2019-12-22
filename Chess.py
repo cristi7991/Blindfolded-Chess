@@ -75,7 +75,7 @@ def checkValidWhitePawnMove(x1, y1, x2, y2):
     else:
         if x1 - x2 == 1:
             if y2 - y1 == 1 or y2 - y1 == -1:
-                if getColor(x2, y2) != getColor(x1, y1):
+                if getColor(x2, y2) == getColor(x1, y1):
                     ok = 1
             else:
                 ok = 1
@@ -105,7 +105,7 @@ def checkValidBlackPawnMove(x1, y1, x2, y2):
     else:
         if x2 - x1 == 1:
             if y2 - y1 == 1 or y2 - y1 == -1:
-                if getColor(x2, y2) != getColor(x1, y1):
+                if getColor(x2, y2) == getColor(x1, y1):
                     ok = 1
             else:
                 ok = 1
@@ -170,6 +170,38 @@ def checkValidBishopMove(x1, y1, x2, y2):
     else:
         return False
 
+def checkValidRookMove(x1, y1, x2, y2):
+
+    print(x1, y1, x2, y2)
+    if getColor(x2, y2) != getColor(x1, y1):
+        if x1 == x2:
+            for i in range(1, abs(y2 - y1)):
+                if y2 > y1:         #right
+                    if getColor(x1, y1 + i) != -1:
+                        return False
+                else:               #left
+                    if getColor(x1, y1 - i) != -1:
+                        return False
+            return True
+        elif y1 == y2:
+            for i in range(1, abs(x2 - x1)):
+                if x2 > x1:         #up
+                    if getColor(x1 - i, y1) != -1:
+                        return False
+                else:               #down
+                    if getColor(x1 - i, y1) != -1:
+                        return False
+            return True
+        else:
+            return False
+    else:
+        return False
+
+def checkValidQueenMove(x1, y1, x2, y2):
+    if checkValidRookMove(x1, y1, x2, y2) or checkValidBishopMove(x1, y1, x2, y2):
+        return True
+    return False
+
 ## TODO protected piece?
 def protected(x, y):
     return False
@@ -205,6 +237,10 @@ def movePiece(init, final):
         ok = ok and checkValidKnightMove(x1, y1, x2, y2)
     if board[x1][y1] == 'Bw' or board[x1][y1] == 'Bb':
         ok = ok and checkValidBishopMove(x1, y1, x2, y2)
+    if board[x1][y1] == 'Rw' or board[x1][y1] == 'Rb':
+        ok = ok and checkValidRookMove(x1, y1, x2, y2)
+    if board[x1][y1] == 'Qw' or board[x1][y1] == 'Qb':
+        ok = ok and checkValidQueenMove(x1, y1, x2, y2)
 
     if not ok:
         print('Invalid move')
