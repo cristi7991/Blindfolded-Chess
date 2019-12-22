@@ -1,8 +1,22 @@
 1. isCheck() - verific daca jucatorul la mutare e in sah
 2. safeMove() - sa nu pot sa mut piesa, daca dupa mutare as ramane in sah sau as muta regele in sah
+<<<<<<< HEAD
 3. mecanism mutare pe rand alb-negru
 4. isCheckMate() - numele spune tot
 5. mecanism rocada
 6. schema cu pionii cand muti pion 2 patratele sa poti sa iei cu un pion .
 7. undo 
 8. voce care sa anunte invalid move, check, check mate
+=======
+
+4. isCheckMate() - numele spune tot
+5. mecanism rocada
+6. schema cu pionii cand muti pion 2 patratele sa poti sa iei cu un pion .
+8. voce care sa anunte invalid move, check, check mate
+
+Done:
+9. Toate piesele ok
+3. mecanism mutare pe rand alb-negru
+7. undo
+
+>>>>>>> cezar
