@@ -8,7 +8,7 @@ def getColor(x, y):
     if board[x][y] == 0:
         return -1
     if board[x][y] in {'Rw', 'Nw', 'Bw', 'Kw', 'Qw', 'Pw'}:
-        return 0;
+        return 0
     return 1
 
 def getPieceImage(x):
@@ -75,7 +75,6 @@ def checkValidWhitePawnMove(x1, y1, x2, y2):
     else:
         if x1 - x2 == 1:
             if y2 - y1 == 1 or y2 - y1 == -1:
-
                 if getColor(x2, y2) != getColor(x1, y1):
                     ok = 1
             else:
@@ -170,10 +169,6 @@ def checkValidBishopMove(x1, y1, x2, y2):
             return False
     else:
         return False
-
-
-
-
 
 ## TODO protected piece?
 def protected(x, y):
