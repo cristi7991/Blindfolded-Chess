@@ -171,10 +171,6 @@ def checkValidBishopMove(x1, y1, x2, y2):
     else:
         return False
 
-
-
-
-
 ## TODO protected piece?
 def protected(x, y):
     return False
