@@ -76,7 +76,7 @@ def checkValidWhitePawnMove(x1, y1, x2, y2):
         if x1 - x2 == 1:
             if y2 - y1 == 1 or y2 - y1 == -1:
 
-                if getColor(x2, y2) != getColor(x1, y1):
+                if getColor(x2, y2) == getColor(x1, y1):
                     ok = 1
             else:
                 ok = 1
@@ -106,7 +106,7 @@ def checkValidBlackPawnMove(x1, y1, x2, y2):
     else:
         if x2 - x1 == 1:
             if y2 - y1 == 1 or y2 - y1 == -1:
-                if getColor(x2, y2) != getColor(x1, y1):
+                if getColor(x2, y2) == getColor(x1, y1):
                     ok = 1
             else:
                 ok = 1
