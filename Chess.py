@@ -61,7 +61,6 @@ def drawBoard():
 def checkValidWhitePawnMove(x1, y1, x2, y2):
 
     ok = 0
-    print(x1, y1, x2, y2)
     if y1 == y2:
         if x1 == 6:
             if x2 != 5 and x2 != 4:
@@ -91,7 +90,6 @@ def checkValidWhitePawnMove(x1, y1, x2, y2):
 def checkValidBlackPawnMove(x1, y1, x2, y2):
     ok = 0
 
-    print(x1, y1, x2, y2)
     if y1 == y2:
         if x1 == 1:
             if x2 != 2 and x2 != 3:
@@ -121,22 +119,17 @@ def checkValidBlackPawnMove(x1, y1, x2, y2):
 
 def checkValidKingMove(x1, y1, x2, y2):
 
-    print(x1, y1, x2, y2)
     if abs(x2 - x1) > 1 or abs(y2 - y1) > 1:
         return False
     if x1 == x2 and y1 == y2:
         return False
-    if safeMove(x2, y2) == True:
-        if getColor(x2, y2) == getColor(x1, y1):
-            return False
-        else:
-            return True
-    else:
+    if getColor(x2, y2) == getColor(x1, y1):
         return False
+    return True
 
 
 def checkValidKnightMove(x1, y1, x2, y2):
-    print(x1, y1, x2, y2)
+
     if getColor(x2, y2) == getColor(x1, y1):
         return False
     elif abs(x2 - x1) == 1 and abs(y2 - y1) == 2:
@@ -148,7 +141,7 @@ def checkValidKnightMove(x1, y1, x2, y2):
 
 
 def checkValidBishopMove(x1, y1, x2, y2):
-    print(x1, y1, x2, y2)
+
     if abs(x2 - x1) == abs(y2 - y1):
         if getColor(x2, y2) != getColor(x1, y1):
             if x2 < x1 and y2 > y1: #up - right
@@ -178,7 +171,7 @@ def checkValidBishopMove(x1, y1, x2, y2):
 
 def checkValidRookMove(x1, y1, x2, y2):
 
-    print(x1, y1, x2, y2)
+
     if getColor(x2, y2) != getColor(x1, y1):
         if x1 == x2:
             for i in range(1, abs(y2 - y1)):
@@ -218,16 +211,26 @@ def getCoords(piece):
                 return [i,j]
 
 
-def isCheck():
-    if whiteToMove:
-        kx, ky = getCoords('Kw')
+def isCheckWhite():
+    global whiteToMove
+    kx, ky = getCoords('Kw')
 
-    else:
-        kx, ky = getCoords('Kb')
     for i in range(8):
         for j in range(8):
             if canMove(i, j, kx, ky):
                 return True
+
+    return False
+
+def isCheckBlack():
+    global whiteToMove
+    kx, ky = getCoords('Kb')
+
+    for i in range(8):
+        for j in range(8):
+            if canMove(i, j, kx, ky):
+                return True
+
     return False
 
 
@@ -275,6 +278,7 @@ def movePiece(init, final):
     x1 = 7 - x1
     x2 = 7 - x2
 
+
     if not canMove(x1,y1,x2,y2):
         print("Invalid Move")
         return
@@ -283,9 +287,23 @@ def movePiece(init, final):
 
     board[x2][y2] = board[x1][y1]
     board[x1][y1] = 0
+    movesStack.append(boardCopy)
     whiteToMove = not whiteToMove
 
-    movesStack.append(boardCopy)
+    if not whiteToMove:
+        if isCheckWhite():
+            undo()
+            print('Invalid Move')
+            return
+    else:
+        if isCheckBlack():
+            undo()
+            print('Invalid move')
+            return
+
+
+
+
 
 
 def undo():
@@ -428,7 +446,7 @@ while not gameOver:
         print(move)
         movePiece(move[0:2], move[2:4])
         move = ''
-        print(isCheck())
+
 
     drawBoard()
     pygame.display.update()
