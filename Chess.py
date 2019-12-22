@@ -147,6 +147,29 @@ def checkValidBlackKingMove(x1, y1, x2, y2):
     else:
         return False
 
+def checkValidWhiteKnightMove(x1, y1, x2, y2):
+    print(x1, y1, x2, y2)
+    if getColor(x2, y2) == 0:
+        return False
+    elif abs(x2 - x1) == 1 and abs(y2 - y1) == 2:
+        return True
+    elif abs(x2 - x1) == 2 and abs(y2 - y1) == 1:
+        return True
+    else:
+        return False
+
+def checkValidBlackKnightMove(x1, y1, x2, y2):
+    print(x1, y1, x2, y2)
+    if getColor(x2, y2) == 1:
+        return False
+    elif abs(x2 - x1) == 1 and abs(y2 - y1) == 2:
+        return True
+    elif abs(x2 - x1) == 2 and abs(y2 - y1) == 1:
+        return True
+    else:
+        return False
+
+
 ## TODO protected piece?
 def protected(x, y):
     return False
@@ -180,6 +203,10 @@ def movePiece(init, final):
         ok = ok and checkValidWhiteKingMove(x1, y1, x2, y2)
     if board[x1][y1] == 'Kb':
         ok = ok and checkValidBlackKingMove(x1, y1, x2, y2)
+    if board[x1][y1] == 'Nw':
+        ok = ok and checkValidWhiteKnightMove(x1, y1, x2, y2)
+    if board[x1][y1] == 'Nb':
+        ok = ok and checkValidBlackKnightMove(x1, y1, x2, y2)
 
     if not ok:
         print('Invalid move')
