@@ -1,13 +1,16 @@
 import pygame
 import os
+from copy import copy, deepcopy
 
+whitePieces = {'Rw', 'Nw', 'Bw', 'Kw', 'Qw', 'Pw'}
+blackPieces = {'Rb', 'Nb', 'Bb', 'Kb', 'Qb', 'Pb'}
 
 def getColor(x, y):
 # -1 empty, 0 white, 1 black
 
     if board[x][y] == 0:
         return -1
-    if board[x][y] in {'Rw', 'Nw', 'Bw', 'Kw', 'Qw', 'Pw'}:
+    if board[x][y] in whitePieces:
         return 0;
     return 1
 
@@ -116,6 +119,7 @@ def checkValidBlackPawnMove(x1, y1, x2, y2):
         return False
     return True
 
+
 def checkValidKingMove(x1, y1, x2, y2):
 
     print(x1, y1, x2, y2)
@@ -131,6 +135,7 @@ def checkValidKingMove(x1, y1, x2, y2):
     else:
         return False
 
+
 def checkValidKnightMove(x1, y1, x2, y2):
     print(x1, y1, x2, y2)
     if getColor(x2, y2) == getColor(x1, y1):
@@ -141,6 +146,7 @@ def checkValidKnightMove(x1, y1, x2, y2):
         return True
     else:
         return False
+
 
 def checkValidBishopMove(x1, y1, x2, y2):
     print(x1, y1, x2, y2)
@@ -171,9 +177,27 @@ def checkValidBishopMove(x1, y1, x2, y2):
     else:
         return False
 
-## TODO protected piece?
-def protected(x, y):
+
+def getCoords(piece):
+    for i in range(8):
+        for j in range(8):
+            if board[i][j] == piece:
+                return [i,j]
+
+
+def isCheck():
+    if whiteToMove:
+        kx, ky = getCoords('Kw')
+
+    else:
+        kx, ky = getCoords('Kb')
+    for i in range(8):
+        for j in range(8):
+            if canMove(i, j, kx, ky):
+                return True
     return False
+
+
 
 ## TODO save move
 def safeMove(x, y):
@@ -182,19 +206,14 @@ def safeMove(x, y):
     return True
 
 
-def movePiece(init, final):
-
+def canMove(x1,y1,x2,y2):
     ok = True
-    y1 = ord(init[0]) - ord('A')
-    x1 = ord(init[1]) - ord('1')
-    y2 = ord(final[0]) - ord('A')
-    x2 = ord(final[1]) - ord('1')
 
-    x1 = 7 - x1
-    x2 = 7 - x2
     if board[x1][y1] == 0:
-        print('Invalid move')
-        return
+        return False
+
+    global whiteToMove
+    ok = ok and (whiteToMove == (board[x1][y1][1] == 'w'))
 
     if board[x1][y1] == 'Pw':
         ok = ok and checkValidWhitePawnMove(x1, y1, x2, y2)
@@ -207,11 +226,38 @@ def movePiece(init, final):
     if board[x1][y1] == 'Bw' or board[x1][y1] == 'Bb':
         ok = ok and checkValidBishopMove(x1, y1, x2, y2)
 
-    if not ok:
-        print('Invalid move')
+    return ok
+
+def movePiece(init, final):
+
+    y1 = ord(init[0]) - ord('A')
+    x1 = ord(init[1]) - ord('1')
+    y2 = ord(final[0]) - ord('A')
+    x2 = ord(final[1]) - ord('1')
+
+    x1 = 7 - x1
+    x2 = 7 - x2
+
+    if not canMove(x1,y1,x2,y2):
+        print("Invalid Move")
         return
+    global whiteToMove
+    boardCopy = deepcopy(board)
+
     board[x2][y2] = board[x1][y1]
     board[x1][y1] = 0
+    whiteToMove = not whiteToMove
+
+    movesStack.append(boardCopy)
+
+
+def undo():
+    boardCopy = movesStack.pop()
+    global board
+    board = deepcopy(boardCopy)
+    global whiteToMove
+    whiteToMove = not whiteToMove
+
 
 def getLetter(keys):
     if keys[pygame.K_a]:
@@ -281,16 +327,18 @@ pieces_image = pygame.transform.scale(pieces_image,
 screen = pygame.display.set_mode(size_of_bg)
 
 
-
 gameOver = False
 move = ''
 nextIsLetter = True
 showTable = True
 lastChange = 0
 boardWithHelp = True
+whiteToMove = True
+movesStack = []
 
 drawBoard()
 pygame.display.update()
+
 
 # MAIN LOOP
 while not gameOver:
@@ -320,6 +368,12 @@ while not gameOver:
         showTable = not showTable
         lastChange = 0
 
+#undo
+    if keys[pygame.K_u] and lastChange > 30:
+        move = ''
+        undo()
+        lastChange = 0
+
 # get input
     if nextIsLetter:
         x = getLetter(keys)
@@ -337,15 +391,11 @@ while not gameOver:
         print(move)
         movePiece(move[0:2], move[2:4])
         move = ''
+        print(isCheck())
 
     drawBoard()
     pygame.display.update()
 
 
 pygame.quit()
-
-
-
-
-
 
