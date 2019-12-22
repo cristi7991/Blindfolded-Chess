@@ -168,6 +168,8 @@ def checkValidBlackKnightMove(x1, y1, x2, y2):
     else:
         return False
 
+def checkValidWhiteBishopMove(x1, y1, x2, y2):
+
 
 ## TODO protected piece?
 def protected(x, y):

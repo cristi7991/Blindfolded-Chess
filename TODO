@@ -1,0 +1,2 @@
+1. Protected piece - sa nu pot sa o iau cu regele daca e protejata
+2. safeMove() - sa nu pot sa mut piesa, daca dupa mutare as ramane in sah
