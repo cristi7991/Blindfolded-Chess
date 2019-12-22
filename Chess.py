@@ -116,7 +116,7 @@ def checkValidBlackPawnMove(x1, y1, x2, y2):
         return False
     return True
 
-def checkValidWhiteKingMove(x1, y1, x2, y2):
+def checkValidKingMove(x1, y1, x2, y2):
 
     print(x1, y1, x2, y2)
     if abs(x2 - x1) > 1 or abs(y2 - y1) > 1:
@@ -124,31 +124,16 @@ def checkValidWhiteKingMove(x1, y1, x2, y2):
     if x1 == x2 and y1 == y2:
         return False
     if safeMove(x2, y2) == True:
-        if getColor(x2, y2) == 0:
+        if getColor(x2, y2) == getColor(x1, y1):
             return False
         else:
             return True
     else:
         return False
 
-def checkValidBlackKingMove(x1, y1, x2, y2):
-
+def checkValidKnightMove(x1, y1, x2, y2):
     print(x1, y1, x2, y2)
-    if abs(x2 - x1) > 1 or abs(y2 - y1) > 1:
-        return False
-    if x1 == x2 and y1 == y2:
-        return False
-    if getColor(x2, y2) == -1:
-        return True
-    elif getColor(x2, y2) == 0 and safeMove(x2, y2) == True:   ##TODO safeMove?
-        print(board[x2][y2])
-        return True
-    else:
-        return False
-
-def checkValidWhiteKnightMove(x1, y1, x2, y2):
-    print(x1, y1, x2, y2)
-    if getColor(x2, y2) == 0:
+    if getColor(x2, y2) == getColor(x1, y1):
         return False
     elif abs(x2 - x1) == 1 and abs(y2 - y1) == 2:
         return True
@@ -157,18 +142,37 @@ def checkValidWhiteKnightMove(x1, y1, x2, y2):
     else:
         return False
 
-def checkValidBlackKnightMove(x1, y1, x2, y2):
+def checkValidBishopMove(x1, y1, x2, y2):
     print(x1, y1, x2, y2)
-    if getColor(x2, y2) == 1:
-        return False
-    elif abs(x2 - x1) == 1 and abs(y2 - y1) == 2:
-        return True
-    elif abs(x2 - x1) == 2 and abs(y2 - y1) == 1:
-        return True
+    if abs(x2 - x1) == abs(y2 - y1):
+        if getColor(x2, y2) != getColor(x1, y1):
+            if x2 < x1 and y2 > y1: #up - right
+                for i in range(1, abs(x2 - x1)):
+                    if getColor(x1 - i, y1 + i) != -1:
+                        return False
+                return True
+            elif x2 < x1 and y2 < y1: #up - left
+                for i in range(1, abs(x2 - x1)):
+                    if getColor(x1 - i, y1 - i) != -1:
+                        return False
+                return True
+            elif x2 > x1 and y2 > y1: #down - right
+                for i in range(1, abs(x2 - x1)):
+                    if getColor(x1 + i, y1 + i) != -1:
+                        return False
+                return True
+            elif x2 > x1 and y2 < y1: #down - left
+                for i in range(1, abs(x2 - x1)):
+                    if getColor(x1 + i, y1 - i) != -1:
+                        return False
+                return True
+        else:
+            return False
     else:
         return False
 
-def checkValidWhiteBishopMove(x1, y1, x2, y2):
+
+
 
 
 ## TODO protected piece?
@@ -200,14 +204,12 @@ def movePiece(init, final):
         ok = ok and checkValidWhitePawnMove(x1, y1, x2, y2)
     if board[x1][y1] == 'Pb':
         ok = ok and checkValidBlackPawnMove(x1, y1, x2, y2)
-    if board[x1][y1] == 'Kw':
-        ok = ok and checkValidWhiteKingMove(x1, y1, x2, y2)
-    if board[x1][y1] == 'Kb':
-        ok = ok and checkValidBlackKingMove(x1, y1, x2, y2)
-    if board[x1][y1] == 'Nw':
-        ok = ok and checkValidWhiteKnightMove(x1, y1, x2, y2)
-    if board[x1][y1] == 'Nb':
-        ok = ok and checkValidBlackKnightMove(x1, y1, x2, y2)
+    if board[x1][y1] == 'Kw' or board[x1][y1] == 'Kb':
+        ok = ok and checkValidKingMove(x1, y1, x2, y2)
+    if board[x1][y1] == 'Nw' or board[x1][y1] == 'Nb':
+        ok = ok and checkValidKnightMove(x1, y1, x2, y2)
+    if board[x1][y1] == 'Bw' or board[x1][y1] == 'Bb':
+        ok = ok and checkValidBishopMove(x1, y1, x2, y2)
 
     if not ok:
         print('Invalid move')
@@ -274,11 +276,11 @@ background2 = pygame.image.load(os.path.join('Media','board2.png')).convert()
 pieces_image = pygame.image.load(os.path.join('Media','Chess_Pieces_Sprite.png')).convert_alpha()
 
 size_of_bg = background1.get_rect().size
-square_width = int(size_of_bg[0]/8)
-square_height = int(size_of_bg[1]/8)
+square_width = int(size_of_bg[0] / 8)
+square_height = int(size_of_bg[1] / 8)
 
 pieces_image = pygame.transform.scale(pieces_image,
-                                      (square_width*6,square_height*2))
+                                  (square_width * 6, square_height * 2))
 
 screen = pygame.display.set_mode(size_of_bg)
 
