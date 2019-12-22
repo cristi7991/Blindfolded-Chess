@@ -3,7 +3,7 @@ import os
 
 
 def getColor(x, y):
-# -1 empty, 0 black, 1 white
+# -1 empty, 0 white, 1 black
 
     if board[x][y] == 0:
         return -1
@@ -116,24 +116,46 @@ def checkValidBlackPawnMove(x1, y1, x2, y2):
         return False
     return True
 
-def checkValidKingBlackMove(x1, y1, x2, y2):
-    ok = 0
+def checkValidWhiteKingMove(x1, y1, x2, y2):
 
     print(x1, y1, x2, y2)
-    #diff > 1 -> invalid move
     if abs(x2 - x1) > 1 or abs(y2 - y1) > 1:
         return False
-
     if x1 == x2 and y1 == y2:
-        ok = 1
+        return False
+    if safeMove(x2, y2) == True:
+        if getColor(x2, y2) == 0:
+            return False
+        else:
+            return True
     else:
-        ok = 0
+        return False
 
-    if ok == 1:
+def checkValidBlackKingMove(x1, y1, x2, y2):
+
+    print(x1, y1, x2, y2)
+    if abs(x2 - x1) > 1 or abs(y2 - y1) > 1:
+        return False
+    if x1 == x2 and y1 == y2:
+        return False
+    if getColor(x2, y2) == -1:
+        print("Aaa")
+        return True
+    elif getColor(x2, y2) == 0 and safeMove(x2, y2) == True:   ##TODO safeMove?
+        print(board[x2][y2])
+        return True
+    else:
+        return False
+
+## TODO protected piece?
+def protected(x, y):
+    return False
+
+## TODO save move
+def safeMove(x, y):
+    if protected(x, y) == True:
         return False
     return True
-
-
 
 
 def movePiece(init, final):
@@ -144,8 +166,8 @@ def movePiece(init, final):
     y2 = ord(final[0]) - ord('A')
     x2 = ord(final[1]) - ord('1')
 
-    x1 = 7-x1
-    x2 = 7-x2
+    x1 = 7 - x1
+    x2 = 7 - x2
     if board[x1][y1] == 0:
         print('Invalid move')
         return
@@ -155,9 +177,9 @@ def movePiece(init, final):
     if board[x1][y1] == 'Pb':
         ok = ok and checkValidBlackPawnMove(x1, y1, x2, y2)
     if board[x1][y1] == 'Kw':
-        ok = ok and checkValidKingWhiteMove(x1, y1, x2, y2)
+        ok = ok and checkValidWhiteKingMove(x1, y1, x2, y2)
     if board[x1][y1] == 'Kb':
-        ok = ok and checkValidKingBlackMove(x1, y1, x2, y2)
+        ok = ok and checkValidBlackKingMove(x1, y1, x2, y2)
 
     if not ok:
         print('Invalid move')
