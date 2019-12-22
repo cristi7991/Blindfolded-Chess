@@ -139,7 +139,6 @@ def checkValidBlackKingMove(x1, y1, x2, y2):
     if x1 == x2 and y1 == y2:
         return False
     if getColor(x2, y2) == -1:
-        print("Aaa")
         return True
     elif getColor(x2, y2) == 0 and safeMove(x2, y2) == True:   ##TODO safeMove?
         print(board[x2][y2])
