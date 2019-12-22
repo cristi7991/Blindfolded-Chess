@@ -1,7 +1,10 @@
 import pygame
 import os
 
-def getColor(x,y):
+
+def getColor(x, y):
+# -1 empty, 0 black, 1 white
+
     if board[x][y] == 0:
         return -1
     if board[x][y] in {'Rw', 'Nw', 'Bw', 'Kw', 'Qw', 'Pw'}:
@@ -10,38 +13,38 @@ def getColor(x,y):
 
 def getPieceImage(x):
 
-    if x == 'Kw':
+    if x == 'Kw':       #king
         return [0,0]
-    if x == 'Qw':
+    if x == 'Qw':       #queen
         return [square_width, 0]
-    if x == 'Bw':
-        return [2*square_width, 0]
-    if x == 'Nw':
-        return [3*square_width, 0]
-    if x == 'Rw':
-        return [4*square_width, 0]
-    if x == 'Pw':
-        return [5*square_width, 0]
+    if x == 'Bw':       #bishop
+        return [2 * square_width, 0]
+    if x == 'Nw':       #knight
+        return [3 * square_width, 0]
+    if x == 'Rw':       #rook
+        return [4 * square_width, 0]
+    if x == 'Pw':       #pawn
+        return [5 * square_width, 0]
 
-    if x == 'Kb':
-        return [0,square_height]
-    if x == 'Qb':
+    if x == 'Kb':       #king
+        return [0, square_height]
+    if x == 'Qb':       #queen
         return [square_width, square_height]
-    if x == 'Bb':
-        return [2*square_width, square_height]
-    if x == 'Nb':
-        return [3*square_width, square_height]
-    if x == 'Rb':
-        return [4*square_width, square_height]
-    if x == 'Pb':
-        return [5*square_width, square_height]
+    if x == 'Bb':       #bishop
+        return [2 * square_width, square_height]
+    if x == 'Nb':       #knight
+        return [3 * square_width, square_height]
+    if x == 'Rb':       #rook
+        return [4 * square_width, square_height]
+    if x == 'Pb':       #pawn
+        return [5 * square_width, square_height]
 
 
 
 def drawBoard():
     #Blit the background:
     if boardWithHelp:
-        screen.blit(background1,(0,0))
+        screen.blit(background1, (0, 0))
     else:
         screen.blit(background2, (0, 0))
     if showTable:
@@ -49,9 +52,10 @@ def drawBoard():
             for j in range(8):
                 if board[i][j] != 0:
                     [x,y] = getPieceImage(board[i][j])
-                    screen.blit(pieces_image, (j*square_width,i*square_height), (x,y,square_width,square_height))
+                    screen.blit(pieces_image, (j * square_width, i * square_height),
+                                                (x, y, square_width, square_height))
 
-def checkValidWhitePawnMove(x1,y1,x2,y2):
+def checkValidWhitePawnMove(x1, y1, x2, y2):
 
     ok = 0
     print(x1, y1, x2, y2)
@@ -85,7 +89,7 @@ def checkValidWhitePawnMove(x1,y1,x2,y2):
 def checkValidBlackPawnMove(x1, y1, x2, y2):
     ok = 0
 
-    print(x1,y1,x2,y2)
+    print(x1, y1, x2, y2)
     if y1 == y2:
         if x1 == 1:
             if x2 != 2 and x2 != 3:
@@ -112,6 +116,25 @@ def checkValidBlackPawnMove(x1, y1, x2, y2):
         return False
     return True
 
+def checkValidKingBlackMove(x1, y1, x2, y2):
+    ok = 0
+
+    print(x1, y1, x2, y2)
+    #diff > 1 -> invalid move
+    if abs(x2 - x1) > 1 or abs(y2 - y1) > 1:
+        return False
+
+    if x1 == x2 and y1 == y2:
+        ok = 1
+    else:
+        ok = 0
+
+    if ok == 1:
+        return False
+    return True
+
+
+
 
 def movePiece(init, final):
 
@@ -128,10 +151,13 @@ def movePiece(init, final):
         return
 
     if board[x1][y1] == 'Pw':
-        ok = ok and checkValidWhitePawnMove(x1,y1,x2,y2)
+        ok = ok and checkValidWhitePawnMove(x1, y1, x2, y2)
     if board[x1][y1] == 'Pb':
         ok = ok and checkValidBlackPawnMove(x1, y1, x2, y2)
-
+    if board[x1][y1] == 'Kw':
+        ok = ok and checkValidKingWhiteMove(x1, y1, x2, y2)
+    if board[x1][y1] == 'Kb':
+        ok = ok and checkValidKingBlackMove(x1, y1, x2, y2)
 
     if not ok:
         print('Invalid move')
@@ -176,7 +202,6 @@ def getDigit(keys):
     if keys[pygame.K_8]:
         return '8'
     return ''
-
 
 # init
 
